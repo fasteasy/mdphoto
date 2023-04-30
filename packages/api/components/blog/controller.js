@@ -1,4 +1,5 @@
 const { Post } = require('../../db/models')
+const { NotFoundError } = require('../../error')
 
 module.exports = class BlogController {
 
@@ -7,11 +8,11 @@ module.exports = class BlogController {
     res.json(posts)
   }
 
-  async get (req, res) {
+  async get (req, res, next) {
     const { params: { id } } = req
     const post = await Post.findByPk(id)
     if (!post) {
-      res.status(404).json({ message: 'not_found' })
+      next(new NotFoundError())
     } else {
       res.json(post)
     }
@@ -27,7 +28,7 @@ module.exports = class BlogController {
     await Post.update(body, { where: { id } })
     const result = await Post.findByPk(id)
     if (!result) {
-      res.status(404).json({ message: 'not_found' })
+      next(new NotFoundError())
     }
     res.json()
   }
@@ -36,7 +37,7 @@ module.exports = class BlogController {
     const { params: { id } } = req
     const result = await Post.destroy({ where: { id } })
     if (!result) {
-      res.status(404).json({ message: 'not_found' })
+      next(new NotFoundError())
     }
     res.json({ result })
   }
