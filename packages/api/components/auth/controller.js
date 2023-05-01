@@ -1,4 +1,5 @@
 const { ForbiddenError } = require('../../error')
+const { User } = require('../../db/models')
 
 const user = {
   role: 'superadmin',
@@ -6,6 +7,15 @@ const user = {
 }
 
 module.exports = class AuthController {
+  async signup (req, res, next) {
+    try {
+      const user = await User.create(req.body)
+      res.json(user)
+    } catch (e) {
+      next(e)
+    }
+  }
+
   whoami (req, res) {
     res.json(user)
   }

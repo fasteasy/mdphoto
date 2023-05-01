@@ -19,11 +19,12 @@ const middleware = (error, req, res, next) => {
   if (!error) {
     next()
   }
-  const { statusCode = 500, message } = error
-  res.status(statusCode).json({ message })
+  const { statusCode = 500 } = error
+  res.status(statusCode).json(error)
 }
 
 module.exports = {
   middleware,
   NotFoundError,
+  ForbiddenError,
 }
